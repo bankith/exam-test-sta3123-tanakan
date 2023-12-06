@@ -3,25 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev -p 4000",
+    "build": "next build && aws s3 sync out/ s3://exam-test-sta3123-tanakan --acl public-read --profile bankstanakan",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tsc": "tsc"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.26.3",
+    "next": "^14.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.0.3"
+    "react-popper": "^2.3.0"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.3",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "eslint": "^8",
-    "eslint-config-next": "14.0.3"
+    "typescript": "^5"
+  },
+  "eslintConfig": {
+    "rules": {
+        "jsx-a11y/accessible-emoji": "off"
+    }
   }
+  
 }
