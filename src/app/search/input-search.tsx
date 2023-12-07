@@ -19,14 +19,15 @@ import SearchItem from "./search-item";
 import SearchIcon from "../common/input/searchicon-on-input";
 import LoadingOnInput from "../common/input/loading-on-input";
 import { globalCurrencies } from "./data/mock-data"
+import { data } from "./data"
 
-function InputSearch({onInputValueChanged, searchStringCondition, providedItems=[], providedItemsUrl="globalCurrencies", isSearchOnFocus=false, isDisable=false, synchronousSearching=false, customDisplay=null, onSelectedItemsChanged=null} : any) {
+function InputSearch({onInputValueChanged, searchStringCondition, providedItems=[], providedItemsUrl="", isSearchOnFocus=false, isDisable=false, synchronousSearching=false, customDisplay=null, onSelectedItemsChanged=null} : any) {
 
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [orginalItems, setOrginalItems] = useState([]);
-  const [items, setItems] = useState([]);
+  const [orginalItems, setOrginalItems] = useState<any[]>([]);
+  const [items, setItems] = useState<any[]>([]);
   const [itemsCheck, setItemsCheck] = useState<Boolean[]>([]);
 
 
@@ -62,12 +63,10 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
       setOrginalItems(providedItems)
       setItems(providedItems)
 
-      // var i : boolean[] = [];
       providedItems.forEach((item: any)=>{
         itemsCheck.push(false);
       })
       setItemsCheck(itemsCheck)
-      // console.log(orginalItems)
     }
     
   }, []);
@@ -131,16 +130,25 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
   
         setIsLoading(true)
         sleep(1000).then(()=>{
+            var datas = []
+            datas = orginalItems;
+            if(providedItemsUrl == "globalCurrenciesAPI"){
+              setOrginalItems(globalCurrencies);
+              datas = globalCurrencies;
+            }
+            else if(providedItemsUrl == "fruitsAPI"){
+              setOrginalItems(data);
+              datas = data;
+            }
+            
+
             setIsLoading(false)
-
-            setItems(orginalItems.filter(filterString));
-
+            setItems(datas.filter(filterString));
             setOpen(true);
             setActiveIndex(0);
         })
     }else{
         setActiveIndex(null);
-        // // setInputValue(items[activeIndex]);
         setOpen(false);
     }
   }, [debouncedInputValue]);
@@ -156,10 +164,6 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
   const onItemChecked = (index: number)=>{
     itemsCheck[index] = !itemsCheck[index];
     setItemsCheck(itemsCheck)
-
-    // selectedItems.push(globalCurrencies[index]);
-    // console.log(selectedItems)
-
     reCalculateSelected();
 
   }
@@ -167,16 +171,12 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
   const reCalculateSelected = ()=>{
     selectedItems.splice(0, selectedItems.length);
 
-    // var copy = [...itemsCheck]
-    // console.log(itemsCheck.length)
     for (let i = 0; i < itemsCheck.length; i++) {
-      // const isChecked = itemsCheck[i];
       if(itemsCheck[i] == true){
         selectedItems.push(orginalItems[i]);
       }
     }
     setSelectedItems([...selectedItems])
-    // console.log(selectedItems)
   }
   
   return (
@@ -194,15 +194,12 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
             "aria-autocomplete": "list",
             onKeyDown(event) {
 
-              // console.log("enter")
               if (
                 event.key === "Enter" &&
                 activeIndex != null &&
                 items[activeIndex]
               ) {
                 onItemChecked(activeIndex)
-                // itemsCheck[activeIndex] = !itemsCheck[activeIndex];
-                // setItemsCheck({...itemsCheck})
 
               }else{
                 // refs.domReference.current?.focus()
@@ -243,8 +240,6 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
                       items[activeIndex]
                     ) {
                       onItemChecked(activeIndex)
-                      // itemsCheck[activeIndex] = !itemsCheck[activeIndex];
-                      // setItemsCheck({...itemsCheck})
                     }
                   },
                 })}
@@ -263,10 +258,6 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
                       },
                       onClick() {
                         onItemChecked(index)
-                        // itemsCheck[index] = !itemsCheck[index];
-                        // setItemsCheck({...itemsCheck})
-                      //   setInputValue(item);
-                      //   setOpen(false);
                         // refs.domReference.current?.focus();
                       }
                       

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import SearchComponent from "./search/search-component"
 import { globalCurrencies } from "./search/data/mock-data"
+import { data } from "./search/data"
 
 export default function Home() {
 
@@ -45,24 +46,42 @@ export default function Home() {
                 }} 
                 isDisable={true}/>
 
-              <SearchComponent 
-                providedItems={globalCurrencies}
-                inputLabel="Sync Search With Results" 
-                inputDescription="Try to click on checkboxes and results will be displayed"
-                isSearchOnFocus={true}
-                searchStringCondition={(item : any, inputValue: any)=>{
-                  return item.name.toLowerCase().includes(inputValue.toLowerCase())
-                }} 
-                synchronousSearching={true}
-                onSelectedItemsChanged={(items: any)=>{
-                  console.log(items)
-                  setSelectedItems(items)
-                }}/>
 
-                {selectedItems!=undefined ? selectedItems.map((item, index) => (
-                    <div key={index}>{item.name}</div>
-                )) : null}
+              <SearchComponent 
+                providedItems={data}
+                inputLabel="Sync Search With Another Dataset Of Fruits" 
+                inputDescription=""
+                customDisplay={CustomView2}
+                providedItemsUrl="fruitsAPI"
+                searchStringCondition={(item : any, inputValue: any)=>{
+                  return (item+"").toLowerCase().includes(inputValue.toLowerCase())
+                }} 
+                isSearchOnFocus={true}
+                synchronousSearching={true}
+                />
+
+                <SearchComponent 
+                    providedItems={globalCurrencies}
+                    inputLabel="Sync Search With Results" 
+                    inputDescription="Try to click on checkboxes to see results under"
+                    isSearchOnFocus={true}
+                    providedItemsUrl="globalCurrenciesAPI"
+                    searchStringCondition={(item : any, inputValue: any)=>{
+                      return item.name.toLowerCase().includes(inputValue.toLowerCase())
+                    }} 
+                    synchronousSearching={true}
+                    onSelectedItemsChanged={(items: any)=>{
+                      setSelectedItems(items)
+                    }}/>
+
+                    {selectedItems!=undefined ? selectedItems.map((item, index) => (
+                        <div key={index}>{item.name}</div>
+                    )) : null}
+
+            
+
           </div>
+
         </div>
       
      
@@ -86,5 +105,22 @@ function CustomViewGreen(item: any, active: boolean, checkState: any, handleChan
             </div>
         </div>
       </div>);
-  
+}
+
+function CustomView2(item: any, active: boolean, checkState: any, handleChange: any){
+  // console.log(item)
+  return (
+  <div className={(active ? "bg-red-100" : "odd:bg-gray-50 bg-white") + " "}>
+      <div className="flex items-center justify-between px-4 py-2 text-sm leading-5 cursor-pointer focus:outline-none text-gray-600">
+          <div className="flex flex-col flex-1"><span className="text-sm text-gray-600">{item}</span></div>
+          <div className="relative pl-3 pointer-events-none">
+              <input type="checkbox" 
+                checked={checkState} onChange={handleChange} 
+                className="w-4 h-4 text-blue-600 transition duration-150 ease-in-out form-checkbox"
+                  />
+
+                
+          </div>
+      </div>
+    </div>);
 }
