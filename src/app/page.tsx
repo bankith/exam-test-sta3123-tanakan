@@ -1,9 +1,13 @@
 "use client";
 
+import React, { useState } from "react";
 import SearchComponent from "./search/search-component"
 import { globalCurrencies } from "./search/data/mock-data"
 
 export default function Home() {
+
+  const [selectedItems, setSelectedItems] = useState<any[]>([]);
+
   return (
     <main className="bg-gray-100 flex items-center justify-center w-screen h-screen p-6">
 
@@ -41,6 +45,23 @@ export default function Home() {
                 }} 
                 isDisable={true}/>
 
+              <SearchComponent 
+                providedItems={globalCurrencies}
+                inputLabel="Sync Search With Results" 
+                inputDescription="Try to click on checkboxes and results will be displayed"
+                isSearchOnFocus={true}
+                searchStringCondition={(item : any, inputValue: any)=>{
+                  return item.name.toLowerCase().includes(inputValue.toLowerCase())
+                }} 
+                synchronousSearching={true}
+                onSelectedItemsChanged={(items: any)=>{
+                  console.log(items)
+                  setSelectedItems(items)
+                }}/>
+
+                {selectedItems!=undefined ? selectedItems.map((item, index) => (
+                    <div key={index}>{item.name}</div>
+                )) : null}
           </div>
         </div>
       

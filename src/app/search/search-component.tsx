@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import {useFloating, offset} from '@floating-ui/react';
 import InputSearch from "./input-search";
 
-export default function SearchComponent({ inputLabel, inputDescription, isSearchOnFocus, providedItems, isDisable, synchronousSearching, searchStringCondition, customDisplay }: any) {
+export default function SearchComponent({ inputLabel, inputDescription, isSearchOnFocus, providedItems, isDisable, synchronousSearching, searchStringCondition, customDisplay, onSelectedItemsChanged }: any) {
 
     return (
         <div>
@@ -16,7 +16,8 @@ export default function SearchComponent({ inputLabel, inputDescription, isSearch
             isDisable={isDisable} 
             synchronousSearching={synchronousSearching} 
             searchStringCondition={searchStringCondition}
-            customDisplay={customDisplay}/>
+            customDisplay={customDisplay}
+            onSelectedItemsChanged={onSelectedItemsChanged}/>
             
 
 

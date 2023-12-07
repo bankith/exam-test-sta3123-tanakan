@@ -20,7 +20,7 @@ import SearchIcon from "../common/input/searchicon-on-input";
 import LoadingOnInput from "../common/input/loading-on-input";
 import { globalCurrencies } from "./data/mock-data"
 
-function InputSearch({onInputValueChanged, searchStringCondition, providedItems=[], providedItemsUrl="globalCurrencies", isSearchOnFocus=false, isDisable=false, synchronousSearching=false, customDisplay=null} : any) {
+function InputSearch({onInputValueChanged, searchStringCondition, providedItems=[], providedItemsUrl="globalCurrencies", isSearchOnFocus=false, isDisable=false, synchronousSearching=false, customDisplay=null, onSelectedItemsChanged=null} : any) {
 
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -35,8 +35,7 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
 
   const listRef = useRef<Array<HTMLElement | null>>([]);
 
-  // const [selectedItems, setSelectedItems] = useState([]);
-  var selectedItems : any[] = [];
+  const [selectedItems, setSelectedItems] = useState<any>([]);
 
   const { refs, floatingStyles, context } = useFloating<HTMLInputElement>({
     whileElementsMounted: autoUpdate,
@@ -67,7 +66,7 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
       providedItems.forEach((item: any)=>{
         itemsCheck.push(false);
       })
-      // setItemsCheck(itemsCheck.concat(i))
+      setItemsCheck(itemsCheck)
       // console.log(orginalItems)
     }
     
@@ -79,6 +78,13 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
     }
 
   }, [orginalItems]);
+
+  useEffect(() => {
+
+    if(onSelectedItemsChanged){
+      onSelectedItemsChanged(selectedItems)
+    }
+  }, [selectedItems]);
 
 
   const role = useRole(context, { role: "listbox" });
@@ -149,26 +155,28 @@ function InputSearch({onInputValueChanged, searchStringCondition, providedItems=
 
   const onItemChecked = (index: number)=>{
     itemsCheck[index] = !itemsCheck[index];
-    setItemsCheck({...itemsCheck})
+    setItemsCheck(itemsCheck)
 
-    selectedItems.push(globalCurrencies[index]);
-    console.log(selectedItems)
+    // selectedItems.push(globalCurrencies[index]);
+    // console.log(selectedItems)
 
-    // reCalculateSelected();
+    reCalculateSelected();
 
   }
 
   const reCalculateSelected = ()=>{
-    selectedItems = []
+    selectedItems.splice(0, selectedItems.length);
+
     // var copy = [...itemsCheck]
+    // console.log(itemsCheck.length)
     for (let i = 0; i < itemsCheck.length; i++) {
-      // console.log("test")
-      const isChecked = itemsCheck[i];
-      if(isChecked){
-        selectedItems.push(globalCurrencies[i]);
+      // const isChecked = itemsCheck[i];
+      if(itemsCheck[i] == true){
+        selectedItems.push(orginalItems[i]);
       }
     }
-    console.log(selectedItems)
+    setSelectedItems([...selectedItems])
+    // console.log(selectedItems)
   }
   
   return (
